@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var logger = require("./prettyConsole");
 
 require("./argv")();
