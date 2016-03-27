@@ -1,6 +1,6 @@
 {
   "name": "newrelic-neo4j",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Metrict reporter for NewRelic from Neo4j",
   "main": "index.js",
   "author": "Stefan-Gabriel Muscalu <stefan.gabriel.muscalu@gmail.com> (http://my.corneroftheinternet.rocks/)",
@@ -17,7 +17,19 @@
   "engines": {
     "node": ">= 4.0.0"
   },
-  "scripts":{
+  "scripts": {
     "postinstall": "mkdir /etc/newrelic && cp ./config /etc/newrelic/newrelic-neo4j.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stefangab95/newrelic-neo4j.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stefangab95/newrelic-neo4j/issues"
+  },
+  "homepage": "https://github.com/stefangab95/newrelic-neo4j#readme",
+  "keywords": [
+    "newrelic",
+    "neo4j"
+  ]
 }
