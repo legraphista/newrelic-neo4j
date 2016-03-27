@@ -1,6 +1,6 @@
 {
   "name": "newrelic-neo4j",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Metrict reporter for NewRelic from Neo4j",
   "main": "index.js",
   "author": "Stefan-Gabriel Muscalu <stefan.gabriel.muscalu@gmail.com> (http://my.corneroftheinternet.rocks/)",
