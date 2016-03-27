@@ -1,0 +1,23 @@
+{
+  "name": "newrelic-neo4j",
+  "version": "0.0.1",
+  "description": "Metrict reporter for NewRelic from Neo4j",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stefan-Gabriel Muscalu <stefan.gabriel.muscalu@gmail.com> (http://my.corneroftheinternet.rocks/)",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.0.0-rc.2",
+    "daemon": "^1.1.0",
+    "optimist": "^0.6.1",
+    "request": "^2.69.0"
+  },
+  "bin": {
+    "newrelic-neo4j": "./index.js"
+  },
+  "engines": {
+    "node": ">= 4.0.0"
+  }
+}
