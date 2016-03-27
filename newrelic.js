@@ -3,7 +3,7 @@ var os = require("os");
 
 var request = require("request");
 
-var packageJson = JSON.parse(require("fs").readFileSync("./package.json"));
+var packageJson = require("./package.json");
 var config = require(GLOBAL.CONFIG_FILE);
 var logger = require("./prettyConsole");
 
