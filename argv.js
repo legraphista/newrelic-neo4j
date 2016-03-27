@@ -7,6 +7,7 @@ module.exports = () => {
 `Usage: newrelic-neo4j [options]
 
 Options
+    -h, --help      see those options
     -f, --fork      forks the process into a daemon
     -c, --config    sets the config file location
     -o, --out       sets location to output log file
@@ -21,6 +22,6 @@ Options
     }
 
 
-    GLOBAL.CONFIG_FILE = argv.config || argv.c || "./config";
+    GLOBAL.CONFIG_FILE = argv.config || argv.c || "/etc/newrelic/newrelic-neo4j.js";
     GLOBAL.OUTPUT_LOG = argv.out || argv.o;
 };
