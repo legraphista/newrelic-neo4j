@@ -7,7 +7,7 @@ ____
 ## Description
 
 The plugin monitors various metrics of your Neo4J database
-like tits, transactions, storage and cache.
+like hits, transactions, storage and cache.
 
 ___
 
@@ -109,4 +109,4 @@ ___
 
 ## License
 
-`newrelic-neo4j` plugin reporter is offered under MIT license. Please refer to [this page](https://github.com/stefangab95/newrelic-neo4j/blob/master/LICENSE) for more info.`
+`newrelic-neo4j` plugin reporter is offered under MIT license. Please refer to [this page](https://github.com/stefangab95/newrelic-neo4j/blob/master/LICENSE) for more info.
