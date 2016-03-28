@@ -71,7 +71,9 @@ function extractData(data) {
             NumberOfNodeIdsInUse: databaseIdCounts["NumberOfNodeIdsInUse"]["value"],
             NumberOfPropertyIdsInUse: databaseIdCounts["NumberOfPropertyIdsInUse"]["value"],
             NumberOfRelationshipIdsInUse: databaseIdCounts["NumberOfRelationshipIdsInUse"]["value"],
-            NumberOfRelationshipTypeIdsInUse: databaseIdCounts["NumberOfRelationshipTypeIdsInUse"]["value"]
+            NumberOfRelationshipTypeIdsInUse: databaseIdCounts["NumberOfRelationshipTypeIdsInUse"]["value"],
+
+            __typedef: 'ids'
         };
     }
 
@@ -92,45 +94,53 @@ function extractData(data) {
         };
 
         object["Eviction"] = {
-            Count: cacheDelta["Evictions"],
-            Exceptions: cacheDelta["EvictionExceptions"]
+            "Eviction[ops]": cacheDelta["Evictions"],
+            "Exceptions[ops]": cacheDelta["EvictionExceptions"]
         };
 
         object["Flushes"] = {
-            Count: cacheDelta["Flushes"],
-            Faults: cacheDelta["Faults"]
+            "Flushes[ops]": cacheDelta["Flushes"],
+            "Faults[ops]": cacheDelta["Faults"]
         };
         var flushes = data[helper.infoStrings.types.cache]["attributes"];
         object["Flushes Total"] = {
             Count: flushes["Flushes"]["value"],
-            Faults: flushes["Faults"]["value"]
+            Faults: flushes["Faults"]["value"],
+
+            __typedef: 'ops'
         };
 
 
         object["Pins"] = {
-            Pins: cacheDelta["Pins"],
-            Unpins: cacheDelta["Unpins"]
+            "Pins[ops]": cacheDelta["Pins"],
+            "Unpins[ops]": cacheDelta["Unpins"]
         };
 
         object["Mappings"] = {
-            FileMappings: cacheDelta["FileMappings"],
-            FileUnmappings: cacheDelta["FileUnmappings"]
+            "FileMappings[ops]": cacheDelta["FileMappings"],
+            "FileUnmapping[ops]": cacheDelta["FileUnmappings"]
         };
         var mapping = data[helper.infoStrings.types.cache]["attributes"];
         object["Mappings Total"] = {
             FileMappings: mapping["FileMappings"]["value"],
-            FileUnmappings: mapping["FileUnmappings"]["value"]
+            FileUnmappings: mapping["FileUnmappings"]["value"],
+
+            __typedef: 'ops'
         };
     }
 
     if (data[helper.infoStrings.types.trx]) {
         object["Transactions"] = {
             NumberOfCommittedTransactions: cacheDelta["NumberOfCommittedTransactions"],
-            NumberOfRolledBackTransactions: cacheDelta["NumberOfRolledBackTransactions"]
+            NumberOfRolledBackTransactions: cacheDelta["NumberOfRolledBackTransactions"],
+
+            __typedef: 'transactions'
         };
 
         object["Hits"] = {
-            Hits: cacheDelta["NumberOfOpenedTransactions"]
+            Hits: cacheDelta["NumberOfOpenedTransactions"],
+
+            __typedef: 'hits'
         };
     }
 
