@@ -2,6 +2,7 @@
 
 _Neo4j performance monitor plugin for Newrelic_
 
+![Overview](https://cloud.githubusercontent.com/assets/962643/14101863/d8b61656-f59f-11e5-9e29-07327acd2d39.png)
 ____
 
 ## Description
