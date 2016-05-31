@@ -25,5 +25,9 @@ Options
 
 
     GLOBAL.CONFIG_FILE = path.resolve(argv.config || argv.c || "/etc/newrelic/newrelic-neo4j.js");
-    GLOBAL.OUTPUT_LOG = path.resolve(argv.out || argv.o || ("/var/log/newrelic-neo4j-" + process.pid + ".log"));
+    GLOBAL.OUTPUT_LOG = argv.out || argv.o;
+
+    if (GLOBAL.OUTPUT_LOG) {
+        GLOBAL.OUTPUT_LOG = path.resolve(GLOBAL.OUTPUT_LOG);
+    }
 };
