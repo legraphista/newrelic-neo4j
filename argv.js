@@ -1,5 +1,7 @@
 var argv = require("optimist").argv;
 var logger = require("./prettyConsole");
+var path = require('path');
+
 module.exports = () => {
     "use strict";
     if (argv.help || argv.h) {
@@ -22,6 +24,6 @@ Options
     }
 
 
-    GLOBAL.CONFIG_FILE = argv.config || argv.c || "/etc/newrelic/newrelic-neo4j.js";
-    GLOBAL.OUTPUT_LOG = argv.out || argv.o;
+    GLOBAL.CONFIG_FILE = path.resolve(argv.config || argv.c || "/etc/newrelic/newrelic-neo4j.js");
+    GLOBAL.OUTPUT_LOG = path.resolve(argv.out || argv.o || ("/var/log/newrelic-neo4j-" + process.pid + ".log"));
 };
