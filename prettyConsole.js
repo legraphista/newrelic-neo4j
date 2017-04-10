@@ -3,9 +3,9 @@ var fs = require("fs");
 
 function logToFile(message){
     "use strict";
-    if(!GLOBAL.OUTPUT_LOG) return;
+    if(!global.OUTPUT_LOG) return;
 
-    fs.appendFile(GLOBAL.OUTPUT_LOG, message + "\n");
+    fs.appendFile(global.OUTPUT_LOG, message + "\n");
 }
 
 function pad(msg, cnt, chr) {

@@ -58,9 +58,12 @@ More info about Neo4j metrics [here](http://neo4j.com/docs/2.3.0/metrics-extensi
 
 ___
 
-When installing, the plugin will attempt to copy a config file to `/etc/newrelic/newrelic-neo4j.js`. In the file you will find:
+When installing, the plugin will attempt to copy a config file to `/etc/newrelic/newrelic-neo4j.js`. You can also use `--print-config` to print the current config file.
+In the file you will find:
 ```javascript
 module.exports = {
+    pid: "/var/run/newrelic-neo4j.pid",
+    log: "/var/log/newrelic-neo4j.log",
 
     // This is where you enter your license key
     license: "LICENSE KEY",
@@ -94,10 +97,13 @@ and it will attempt to read the config file from `/etc/newrelic/newrelic-neo4j.j
 
 The options are:
 ```
-    -h, --help      To see the options
-    -c, --config    To point to another config file
-    -f, --fork      To start the process as a daemon
-    -o, --out       To write log to an output file besides stdout stream
+    -h, --help      see those options
+    -c, --config    set the config file location
+    -o, --out       set location to output log file
+    -p, --pid       set pid location (/var/run/newrelic-neo4j.pid)
+    -f, --fork      forks the process into a daemon
+    --stop          reads the pid and attempts to close the app
+    --print-config  prints set config or default if none is provided
 ```
 
 ___

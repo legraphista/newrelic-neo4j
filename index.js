@@ -1,172 +1,50 @@
 #!/usr/bin/env node
-
+var argv = require("./args");
+var config = require('./getConfig');
 var logger = require("./prettyConsole");
+var path = require('path');
+var fs = require('fs');
 
-require("./argv")();
-
-var options = require(GLOBAL.CONFIG_FILE);
-
-var helper = require("./helper");
-var cache = require("./cache");
-var newrelic = require("./newrelic");
-
-logger.hr();
-logger.log("Starting neo4j reporter process");
-logger.hr();
-
-helper.getServerInfo.call(helper, options, (err, data)=> {
-    "use strict";
-    logger.log("Building first time cache");
-    cache.cacheWhatNeedsToBeCached(data);
-});
-setInterval(helper.getServerInfo.bind(helper, options, refreshStats), options.interval * 1000);
-
-function refreshStats(err, data) {
-    "use strict";
-    if (err) throw err;
-
-    logger.log("Refreshing data");
-
-    var prettyData = (
-        extractedDataToStringValueArray(
-            extractData(
-                data
-            )
-        )
-    );
-
-    newrelic.sendData(prettyData);
+if (argv.f || argv.fork) {
+  logger.log("Forking process...");
+  var args = [].concat(process.argv).slice(2);
+  var child = require("daemon").daemon(path.join(__dirname, 'daemon.js'), args);
+  logger.log('Forked child with pid ' + child.pid);
+  fs.appendFileSync(global.PID, child.pid + '\n');
+  process.exit(0);
 }
 
-function extractData(data) {
-    "use strict";
-    var cacheDelta = cache.deltaCacheValues(data);
-
-    var object = {};
-
-    if (data[helper.infoStrings.types.fileSize]) {
-        var databaseStorage = data[helper.infoStrings.types.fileSize]["attributes"];
-        object["Database Storage"] = {
-            NodeStoreSize: databaseStorage["NodeStoreSize"]["value"],
-            LogicalLogSize: databaseStorage["LogicalLogSize"]["value"],
-            ArrayStoreSize: databaseStorage["ArrayStoreSize"]["value"],
-            StringStoreSize: databaseStorage["StringStoreSize"]["value"],
-            PropertyStoreSize: databaseStorage["PropertyStoreSize"]["value"],
-            RelationshipStoreSize: databaseStorage["RelationshipStoreSize"]["value"],
-
-            __typedef: 'bytes'
-        };
-
-        var databaseStorageTotal = data[helper.infoStrings.types.fileSize]["attributes"];
-        object["Database Storage Total"] = {
-            TotalStoreSize: databaseStorageTotal["TotalStoreSize"]["value"],
-
-            __typedef: 'bytes'
-        };
+if (argv.stop) {
+  if (!fs.existsSync(global.PID)) {
+    console.warn('Cannot find pid file!');
+    process.exit(2);
+  }
+  logger.log('Reading pidfile', global.PID);
+  var pids = fs.readFileSync(global.PID).toString().trim().split('\n');
+  pids.forEach(function(pid) {
+    try {
+      console.log('Sending SIGTERM to', pid);
+      process.kill(pid);
+    } catch (ex) {
+      console.error(ex);
     }
-
-    if (data[helper.infoStrings.types.counts]) {
-        var databaseIdCounts = data[helper.infoStrings.types.counts]["attributes"];
-        object["Database IDs"] = {
-            NumberOfNodeIdsInUse: databaseIdCounts["NumberOfNodeIdsInUse"]["value"],
-            NumberOfPropertyIdsInUse: databaseIdCounts["NumberOfPropertyIdsInUse"]["value"],
-            NumberOfRelationshipIdsInUse: databaseIdCounts["NumberOfRelationshipIdsInUse"]["value"],
-            NumberOfRelationshipTypeIdsInUse: databaseIdCounts["NumberOfRelationshipTypeIdsInUse"]["value"],
-
-            __typedef: 'ids'
-        };
-    }
-
-    if (data[helper.infoStrings.types.cache]) {
-        object["Cache Disk"] = {
-            BytesRead: cacheDelta["BytesRead"],
-            BytesWritten: cacheDelta["BytesWritten"],
-
-            __typedef: 'bytes'
-        };
-
-        var cacheDisk = data[helper.infoStrings.types.cache]["attributes"];
-        object["Cache Disk Total"] = {
-            BytesRead: cacheDisk["BytesRead"]["value"],
-            BytesWritten: cacheDisk["BytesWritten"]["value"],
-
-            __typedef: 'bytes'
-        };
-
-        object["Eviction"] = {
-            "Eviction[ops]": cacheDelta["Evictions"],
-            "Exceptions[ops]": cacheDelta["EvictionExceptions"]
-        };
-
-        object["Flushes"] = {
-            "Flushes[ops]": cacheDelta["Flushes"],
-            "Faults[ops]": cacheDelta["Faults"]
-        };
-        var flushes = data[helper.infoStrings.types.cache]["attributes"];
-        object["Flushes Total"] = {
-            Count: flushes["Flushes"]["value"],
-            Faults: flushes["Faults"]["value"],
-
-            __typedef: 'ops'
-        };
-
-
-        object["Pins"] = {
-            "Pins[ops]": cacheDelta["Pins"],
-            "Unpins[ops]": cacheDelta["Unpins"]
-        };
-
-        object["Mappings"] = {
-            "FileMappings[ops]": cacheDelta["FileMappings"],
-            "FileUnmapping[ops]": cacheDelta["FileUnmappings"]
-        };
-        var mapping = data[helper.infoStrings.types.cache]["attributes"];
-        object["Mappings Total"] = {
-            FileMappings: mapping["FileMappings"]["value"],
-            FileUnmappings: mapping["FileUnmappings"]["value"],
-
-            __typedef: 'ops'
-        };
-    }
-
-    if (data[helper.infoStrings.types.trx]) {
-        object["Transactions"] = {
-            NumberOfCommittedTransactions: cacheDelta["NumberOfCommittedTransactions"],
-            NumberOfRolledBackTransactions: cacheDelta["NumberOfRolledBackTransactions"],
-
-            __typedef: 'transactions'
-        };
-
-        object["Hits"] = {
-            Hits: cacheDelta["NumberOfOpenedTransactions"],
-
-            __typedef: 'hits'
-        };
-    }
-
-    return object;
+  });
+  fs.unlinkSync(global.PID);
+  process.exit(0);
 }
 
-function extractedDataToStringValueArray(data) {
-    "use strict";
-    var metricsObj = {};
-    Object
-        .keys(data)
-        .map(category => {
-            var template = `Component/${category}`;
-            Object
-                .keys(data[category])
-                .filter(x=>x.slice(0, 2) != "__")
-                .forEach(label=> {
-                    var name = `${template}/${label}`;
-                    if (data[category].__typedef) name = `${name}[${data[category].__typedef}]`;
-                    metricsObj[name] = data[category][label];
-                });
-        });
+if (argv['print-config']) {
+  var configFile =
+    (fs.existsSync(global.CONFIG_FILE) && require(global.CONFIG_FILE)) ||
+    require('./config');
 
-    return metricsObj;
+  logger.log(JSON.stringify(configFile, null, 4));
+  process.exit(0);
 }
 
-process.on('uncaughtException', (err) => {
-    logger.error(`Caught exception: ${err.stack || JSON.stringify(err)}`);
-});
+if (!config) {
+  console.warn('Config not provided, please refer to -h/--help');
+  process.exit(1);
+}
+fs.appendFileSync(global.PID, process.pid + '\n');
+require('./daemon');
