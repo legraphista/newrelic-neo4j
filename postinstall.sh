@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-mkdir /etc/newrelic;
-# don't overwrite the previous file
-cp -n ./config.js /etc/newrelic/newrelic-neo4j.js
+# Create plugin config dir, if it doesn't exist
+[[ ! -d /etc/newrelic ]] &&  mkdir /etc/newrelic
 
-exit 0;
+# Copy new distribution config into place
+cp -f ./config.js /etc/newrelic/newrelic-neo4j.js.dist
+
+# If no config is already in place, create from dist config
+[[ ! -f /etc/newrelic/newrelic-neo4j.js ]] && cp /etc/newrelic/newrelic-neo4j.js{.dist,}
+
+exit 0
