@@ -1,6 +1,6 @@
 {
   "name": "newrelic-neo4j",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Metrict reporter for NewRelic from Neo4j",
   "main": "index.js",
   "author": "Stefan-Gabriel Muscalu <stefan.gabriel.muscalu@gmail.com> (http://my.corneroftheinternet.rocks/)",
@@ -18,7 +18,7 @@
     "node": ">= 4.0.0"
   },
   "scripts": {
-    "postinstall": "sh ./postinstall.sh"
+    "postinstall": "./postinstall.sh"
   },
   "repository": {
     "type": "git",
