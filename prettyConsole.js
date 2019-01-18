@@ -5,7 +5,7 @@ function logToFile(message){
     "use strict";
     if(!global.OUTPUT_LOG) return;
 
-    fs.appendFile(global.OUTPUT_LOG, message + "\n");
+    fs.appendFileSync(global.OUTPUT_LOG, message + "\n");
 }
 
 function pad(msg, cnt, chr) {
